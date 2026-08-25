@@ -59,6 +59,15 @@ A player moves between three distinct zoom levels, each a genuinely different mo
 
 **Status:** registry/formula not yet built — this is the current work in progress (see Open — next steps in the main project note).
 
+### Modular Scene Assembly (extends the Unified Compositional Model into engine/rendering terms, added 2026-08-25)
+**The idea:** vehicle and site interiors are never single, hand-authored level files. Instead, each craftable structural part (a rocket's fuselage segment, an engine, a cargo hold, a cockpit) has two linked halves — a **data half** (its recipe, material composition, and stats, living in the same compositional registry that drives everything else) and a **rendering half** (a small, reusable scene fragment containing that part's walkable interior geometry, plus marker points showing where it can physically connect to other parts). A vehicle's actual interior is **assembled at the moment the player enters it** — a builder reads that specific vehicle's real part list and attachment topology and instances each part's scene fragment into place, positioned by its connection markers.
+
+**Why this matters:** it means "what does the inside of this specific rocket look like" is never authored content — it's generated from the exact same registry that generates planet chemistry and item properties. Swap a fuselage's material or add a second cargo hold, and the interior changes automatically, with no hand-edited level file involved. This is the concrete engine-level mechanism that makes "the same registry drives everything" (the Unified Compositional Model's core claim) literally true for built structures, not just terrain and loose items.
+
+**Relationship to the Containment Collapse Model:** this is specifically *how* the "expand on entry" step (see Technical architecture below) works for anything a player physically walks around inside — a vehicle or site isn't just mathematically expanded from collapsed aggregate values, its actual walkable geometry is *built* at that moment from composable parts, then handed off to normal live rendering once assembled.
+
+**Status:** architectural principle confirmed 2026-08-25, not yet implemented — real part-scene format, marker/connection-point convention, and the assembly builder itself are next-layer implementation work, to be designed once there's an actual vehicle to build (per the development roadmap, this comes after the placeholder ship and reference-Earth physics baseline are in place, not before).
+
 ## The Six Societies
 A faction-based structure: six intelligent-life factions, each with independent standing (friend/enemy/neutral) toward each of the other five — visualized as a 6-node relationship wheel.
 
