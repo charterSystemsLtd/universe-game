@@ -10,13 +10,13 @@ config_version=5
 
 [application]
 
-config/name="Xander's Game"
+config/name="Universe Game"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
 [dotnet]
 
-project/assembly_name="XandersGame"
+project/assembly_name="UniverseGame"
 
 [rendering]
 

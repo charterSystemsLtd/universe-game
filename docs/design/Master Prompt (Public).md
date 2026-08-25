@@ -9,11 +9,11 @@ note: "Public/shareable version of this project's design documentation."
 
 # Master Prompt (Public)
 
-Distilled from [[03 Active Projects/Xander's Game/Design/Public/Master Design Document (Public).md]]. This is the version to refine over time and reuse as a briefing document — for future sessions, collaborators, or as a grounding prompt for later procedural-generation systems (planet generation, NPC generation, music generation) that will need a compact description of the game's identity rather than the full design doc.
+Distilled from [[03 Active Projects/Universe Game/Design/Public/Master Design Document (Public).md]]. This is the version to refine over time and reuse as a briefing document — for future sessions, collaborators, or as a grounding prompt for later procedural-generation systems (planet generation, NPC generation, music generation) that will need a compact description of the game's identity rather than the full design doc.
 
 ---
 
-**Working title:** *Xander's Game* (placeholder — needs a real name).
+**Working title:** *Universe Game* (renamed 2026-08-25, deliberately plain/generic — not urgently flagged for replacement).
 
 **Genre:** Top-down 2D sandbox/exploration game (a clean, classic top-down visual style — explicitly not 3D), spanning three nested scales of play: individual character, vehicle, and universe.
 
@@ -24,7 +24,7 @@ Distilled from [[03 Active Projects/Xander's Game/Design/Public/Master Design Do
 - **Operational Scale** (midgame; situational labels Site/Ship/Boat/Vehicle, Plane tentative): drive terrain-appropriate land/sea vehicles, fly atmospheres gated by planetary chemistry, pilot rockets between orbit and surface, explore settlements/wilderness/stations at speed.
 - **Universal Scale** (unlocked late, via a crafted item/radar; no situational variants): a live view of the observable universe — ship trajectories, trade, automation, encroaching threats — the visible *result* of what's been built, not a separate system.
 
-Full scale-naming rationale: [[03 Active Projects/Xander's Game/Design/Public/Scale Terminology (Public).md]].
+Full scale-naming rationale: [[03 Active Projects/Universe Game/Design/Public/Scale Terminology (Public).md]].
 
 **Procedural universe:** Empty space + celestial bodies. Each planet's chemistry (a formula derived from a reference sample of planets) drives its geography, atmosphere, and what life can exist there. Individual lifeforms get genetics-style trait combination for organic-feeling diversity.
 

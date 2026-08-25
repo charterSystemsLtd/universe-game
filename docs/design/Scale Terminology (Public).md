@@ -7,7 +7,7 @@ sanitized: true
 
 # Scale Terminology — final reference (Public)
 
-The fixed vocabulary for the game's three nested gameplay/camera scales. **The internal term is what code, docs, and design conversations use** (e.g. a `GameScale` enum value) — stable, never changes, never shown raw to the player. **Situational labels are UI-facing only**, swapped based on the player's actual context; the list can grow later without touching the underlying system. See [[03 Active Projects/Xander's Game/Design/Public/Master Design Document (Public).md]] for the full description of what each scale actually does.
+The fixed vocabulary for the game's three nested gameplay/camera scales. **The internal term is what code, docs, and design conversations use** (e.g. a `GameScale` enum value) — stable, never changes, never shown raw to the player. **Situational labels are UI-facing only**, swapped based on the player's actual context; the list can grow later without touching the underlying system. See [[03 Active Projects/Universe Game/Design/Public/Master Design Document (Public).md]] for the full description of what each scale actually does.
 
 | Scale (fixed internal term) | Situational label | Context |
 |---|---|---|

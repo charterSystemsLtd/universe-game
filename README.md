@@ -1,6 +1,6 @@
-# Xander's Game — System (Godot project / codebase)
+# Universe Game — System (Godot project / codebase)
 
-Working-title project. See [[03 Active Projects/Xander's Game/Xander's Game.md]] for full project tracking, scope, and decisions.
+Working-title project. See [[03 Active Projects/Universe Game/Universe Game.md]] for full project tracking, scope, and decisions.
 
 ## Setup
 
@@ -12,7 +12,7 @@ Working-title project. See [[03 Active Projects/Xander's Game/Xander's Game.md]]
 2. Confirm install: `godot-mono --version`, or open `Godot.app` from Applications.
 3. Open this `System/` folder as a project in Godot (File → Import, point at `project.godot` in this folder).
 4. `project.godot` here is a **hand-scaffolded starting point**, not yet verified against a real running editor — Godot may rewrite/regenerate parts of it on first open (normal). Let the editor's own Project Settings be the source of truth going forward once it's opened for real.
-5. The first time you add a C# script, Godot will auto-generate a `.csproj` file (`XandersGame.csproj`) in this folder — that's expected and normal, not something to hand-write.
+5. The first time you add a C# script, Godot will auto-generate a `.csproj` file (`UniverseGame.csproj`) in this folder — that's expected and normal, not something to hand-write.
 
 ## Structure (to be built out)
 Nothing beyond `project.godot` exists yet. Standard Godot structure once real work starts: `scenes/`, `scripts/`, `assets/` (art/audio), matching Godot's own conventions rather than inventing a custom layout.
