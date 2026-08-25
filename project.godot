@@ -1,0 +1,23 @@
+; Engine configuration file.
+; Hand-scaffolded 2026-08-19, NOT yet verified against a running Godot editor
+; (godot-mono wasn't installed yet at scaffold time — see README.md in this
+; folder). Open this project in Godot once installed; if the editor
+; complains or silently rewrites this file, that's expected and fine — let
+; Godot's own project settings UI be the source of truth from that point on
+; rather than this hand-written version.
+
+config_version=5
+
+[application]
+
+config/name="Xander's Game"
+config/features=PackedStringArray("4.7", "C#", "Forward Plus")
+config/icon="res://icon.svg"
+
+[dotnet]
+
+project/assembly_name="XandersGame"
+
+[rendering]
+
+renderer/rendering_method="forward_plus"
