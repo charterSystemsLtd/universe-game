@@ -78,6 +78,14 @@ Multiple liquid types get built on top of whatever base system results. **Explic
 - `IEquippable` — weapons/armor: stats, equip slot.
 - `IConsumable` — food: nutrition/effects.
 
+### Layered character rendering & equipment compositing (added 2026-08-25)
+Real, durable decisions on how `IEquippable` visuals actually get rendered — not just data, an engine-level approach.
+
+- **Per-direction sprites, not necessarily per-frame.** Equipment needs a sprite per facing direction (matching the character's 8-directional set) to visually align with the body, but rigid items (most armor, helmets) can reuse a single sprite across all animation frames of a given direction — only genuinely flowing items (capes, free hair) need per-frame variants. Keeps art cost proportional to how dynamic a piece actually looks, not a flat 8-directions-times-every-frame tax on everything.
+- **Hair/headwear clipping — solved via a `HidesHair` flag on headwear items, not bounding-box discipline.** When a `HidesHair` item is equipped, the hair layer simply isn't drawn (or swaps to a reduced "tucked under" variant) — clipping becomes structurally impossible rather than something to avoid by careful sizing. A shared silhouette-guide reference is still worth keeping for proportional art consistency across headwear, but the flag is what actually prevents the bug.
+- **Composition is baked on equip-change, never live-overlaid during play.** Whenever equipped items change (a comparatively rare event), walk through each needed animation frame once and composite that frame's active layers (body, hair-or-hidden, each equipped piece in slot order) into a single combined image, which is what actually gets displayed during gameplay. Real mechanism: composite source frame images together (CPU-side pixel buffer operations) into a combined result, converted to a real displayable texture. Zero per-frame overlay cost while actually playing — the cost is paid once, at the moment gear changes, not every rendered frame. Given sprite sizes here are tiny (16×16–24px), this baking pass is computationally trivial. Caching baked results by exact equipment-combination signature is a real future optimization (useful if multiple characters end up wearing the same combination), not needed for a first version.
+- **The chosen reference character sprite becomes the canonical body template** once the 16×16-vs-16×24 visual-style decision locks in — all future armor/clothing art gets drawn against it directly, the same way 3D art keeps a T-pose reference.
+
 **Proposed process for adding a new item** (a first pass, refine as real items get built):
 1. Define core identity + composition reference (which registry element/compound it derives from, if any).
 2. Decide which capability interfaces apply — this determines everything else needed.
