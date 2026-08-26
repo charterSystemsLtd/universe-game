@@ -25,6 +25,12 @@ rm -rf "$DEST"
 mkdir -p "$DEST"
 cp -R "$SRC"/. "$DEST"/
 
+# The vault source uses native Obsidian [[wikilinks]] (for backlinks/graph
+# view there) - GitHub doesn't understand that syntax at all and just shows
+# literal bracket text. Convert to standard Markdown links/images in the
+# synced copy only; the vault source itself is never touched by this.
+python3 "$SCRIPT_DIR/convert_wikilinks.py" "$DEST"
+
 echo "Synced public design docs:"
 echo "  $SRC"
 echo "  -> $DEST"

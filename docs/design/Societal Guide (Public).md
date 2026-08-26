@@ -8,7 +8,7 @@ note: "Public/shareable version of this project's design documentation."
 
 # Societal Guide — The Six Societies (Public)
 
-Consolidated reference for the six intelligent-life societies — profiles, habitat/spawn logic, and the full relationship wheel in one document. Source material: [[03 Active Projects/Universe Game/Design/Public/Master Design Document (Public).md]] → "The Six Societies" and "The Two Fundamental Forces"; [[03 Active Projects/Universe Game/Design/Public/Planetary Generation System (Public).md]] → "Society habitat requirements."
+Consolidated reference for the six intelligent-life societies — profiles, habitat/spawn logic, and the full relationship wheel in one document. Source material: [Master Design Document (Public)](Master%20Design%20Document%20(Public).md) → "The Six Societies" and "The Two Fundamental Forces"; [Planetary Generation System (Public)](Planetary%20Generation%20System%20(Public).md) → "Society habitat requirements."
 
 ## Overview
 
@@ -93,7 +93,7 @@ Not good/evil, not a Western dualism — "beings which possess typically differe
 
 ## The Relationship Wheel
 
-![[03 Active Projects/Universe Game/Design/Public/assets/relationship-wheel.png]]
+![](assets/relationship-wheel.png)
 
 **Model:** directional/asymmetric (Society A's stance toward B ≠ B's stance toward A, in general), 3 states — **Friendly** (a general positive characteristic to the relationship, not necessarily a battle-pact), **Neutral** (covers both situational neutrality and genuine indifference), **Enemy**. Layout deliberately echoes the Yin/Yang taijitu: true opposites sit across the hexagon from each other (Mushrooms↔Network, Humanoids↔Cult, Bugs↔Industry), with the dividing line tilted so Mushrooms lands on the Yang side and Network on the Yin side, rather than a forced even split.
 
@@ -136,7 +136,7 @@ Not good/evil, not a Western dualism — "beings which possess typically differe
 | Mushrooms → Network | Neutral | Mushrooms are so expansive and vast in wisdom that they don't concern themselves with the Network, assuming some fundamental limit in its own existence will protect them regardless |
 | Network → Mushrooms | Neutral | The Network observes the Mushrooms, accepts it is far smaller/younger than them currently, and spends its time trying to expand and catch up in size — cutting the Mushrooms down as it goes. A worldly equivalent of the Yin/Yang story arcs. |
 
-Full detail/rationale: [[03 Active Projects/Universe Game/Design/Public/Master Design Document (Public).md]] → "The Six Societies."
+Full detail/rationale: [Master Design Document (Public)](Master%20Design%20Document%20(Public).md) → "The Six Societies."
 
 ## In-world physical rendition — idea, parked
 The exact chart (the hexagon, the arrows, the Yin/Yang placement) is intended to physically exist somewhere *inside* the game itself — discoverable, not labeled or explained. Candidate forms floated: a rune etched somewhere in a cave, a constellation visible in the sky, possibly sited near the universal origin (Yin's location). Ties naturally to the discovery-over-instruction design pillar — the player would have to actually recognize what they're looking at, with no UI callout confirming it. **Not designed — parked for whenever Individual/Operational Scale content-building starts for real.**
