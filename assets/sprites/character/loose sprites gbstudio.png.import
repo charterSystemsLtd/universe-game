@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cq60du6ang2ng"
-path="res://.godot/imported/relationship-wheel.svg-ae7a037981746bd5a1088d83e0c3c9ac.ctex"
+uid="uid://bgub6ra82n667"
+path="res://.godot/imported/loose sprites gbstudio.png-79bd65654a6fa8e184368baab3ccff59.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://docs/design/assets/relationship-wheel.svg"
-dest_files=["res://.godot/imported/relationship-wheel.svg-ae7a037981746bd5a1088d83e0c3c9ac.ctex"]
+source_file="res://assets/sprites/character/loose sprites gbstudio.png"
+dest_files=["res://.godot/imported/loose sprites gbstudio.png-79bd65654a6fa8e184368baab3ccff59.ctex"]
 
 [params]
 
@@ -38,6 +38,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false

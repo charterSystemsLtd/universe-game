@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/Character.tscn" id="1"]
+
+[node name="IndividualScaleTest" type="Node2D"]
+
+[node name="Ground" type="ColorRect" parent="."]
+offset_left = -400.0
+offset_top = -400.0
+offset_right = 400.0
+offset_bottom = 400.0
+color = Color(0.29, 0.55, 0.24, 1)
+
+[node name="Character" parent="." instance=ExtResource("1")]
+
+[node name="Camera2D" type="Camera2D" parent="Character"]
+zoom = Vector2(4, 4)

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cyqk1s5g3took"
-path="res://.godot/imported/relationship-wheel.png-aa225947cb6caa31d3db3bcba5c288a3.ctex"
+uid="uid://3vfu4nfm5lua"
+path="res://.godot/imported/loose sprites.png-7296d85e71ec8ead8178ca0b236652ac.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://docs/design/assets/relationship-wheel.png"
-dest_files=["res://.godot/imported/relationship-wheel.png-aa225947cb6caa31d3db3bcba5c288a3.ctex"]
+source_file="res://assets/sprites/character/loose sprites.png"
+dest_files=["res://.godot/imported/loose sprites.png-7296d85e71ec8ead8178ca0b236652ac.ctex"]
 
 [params]
 
