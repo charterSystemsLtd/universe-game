@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/StarLayerContent.cs" id="1"]
+
+[node name="Starfield" type="ParallaxBackground"]
+
+[node name="DeepSpace" type="ParallaxLayer" parent="."]
+motion_scale = Vector2(0.1, 0.1)
+motion_mirroring = Vector2(1200, 1200)
+
+[node name="Content" type="Node2D" parent="DeepSpace"]
+script = ExtResource("1")
+TileSize = Vector2(1200, 1200)
+StarCount = 80
+PlanetCount = 2
+StarSizeRange = Vector2(0.5, 1)
+PlanetSizeRange = Vector2(4, 8)
+IncludeNebula = true
+RandomSeed = 3
+
+[node name="FarSpace" type="ParallaxLayer" parent="."]
+motion_scale = Vector2(0.4, 0.4)
+motion_mirroring = Vector2(1800, 1800)
+
+[node name="Content" type="Node2D" parent="FarSpace"]
+script = ExtResource("1")
+TileSize = Vector2(1800, 1800)
+StarCount = 150
+PlanetCount = 4
+StarSizeRange = Vector2(1, 1.8)
+PlanetSizeRange = Vector2(6, 14)
+IncludeNebula = false
+RandomSeed = 2
+
+[node name="NearSpace" type="ParallaxLayer" parent="."]
+motion_scale = Vector2(0.8, 0.8)
+motion_mirroring = Vector2(2400, 2400)
+
+[node name="Content" type="Node2D" parent="NearSpace"]
+script = ExtResource("1")
+TileSize = Vector2(2400, 2400)
+StarCount = 250
+PlanetCount = 8
+StarSizeRange = Vector2(1.5, 2.5)
+PlanetSizeRange = Vector2(10, 24)
+IncludeNebula = false
+RandomSeed = 1

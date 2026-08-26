@@ -65,5 +65,20 @@ This is not speculative invention — it's a known, working technique.
 - **Space/thruster-based piloting:** pure-inertia, zero-friction, rotate-and-thrust-only space flight (the foundational genre archetype); a deeper top-down gravity-well flying model with a tethered cargo pod for more advanced momentum feel; the classic thrust-against-gravity landing/takeoff mastery archetype.
 - **Ground vehicles, top-down camera:** classic top-down car-driving games with realistic drift/momentum physics (the strongest, most historically relevant precedent for this camera style); more arcade-accessible top-down racers, if a snappier, less simulation-feeling handling model is wanted instead.
 
+## Operational Scale — Ship-in-space scene construction (real, maintained implementation, added 2026-08-25)
+Unlike the rest of this document, this section describes an actual scene structure that exists in the codebase and is meant to be maintained/extended over the course of development, not a parked idea. This is the concrete realization of the **Ship** situational label (Operational Scale — see Scale Terminology): the player-controlled ship, its camera, and everything visually surrounding it in open space.
+
+**Structure:** a root scene instances the player's ship (with its attached camera) alongside a background starfield as siblings — deliberately siblings, not nested, since the camera follows the ship but the background must NOT move with it, or relative motion becomes invisible.
+
+**Starfield — 3-layer parallax system, first pass.** The movement/tiling/layering *mechanics* below are real and durable; the visuals themselves (plain circles standing in for stars/planets, a soft blob standing in for a nebula) are explicitly unverified placeholders, expected to be replaced once real art exists.
+
+- **Three depth layers — Near Space, Far Space, Deep Space** — each independently configured on three axes:
+  - **Tile size** (how large an area of content repeats before wrapping): **Near > Far > Deep.** Deliberately different per layer, not just different speeds, so the same repeating pattern isn't visible at the same interval across all three layers simultaneously — travelling through space produces varied combinations rather than an obviously-looping backdrop.
+  - **Apparent movement speed relative to the ship** (parallax depth illusion): **Deep moves slowest, Near moves fastest** — distant layers barely shift, close layers shift more, producing real depth perception as the ship travels.
+  - **Object size** (stars/planets scattered within each layer): **Near largest, Far medium, Deep smallest** — reinforces the same near/far depth read visually, independent of movement.
+  - Deep Space additionally includes an occasional very-low-opacity large placeholder shape standing in for a nebula/supernova — background visual interest, not yet real art.
+- **Seamless tiling/wraparound** is the core mechanic requested — when the camera has moved far enough that a layer's content would run out, it loops back to repeat rather than showing empty space. Implemented via a built-in engine mechanism for exactly this (parallax-layer motion scale + mirroring), not hand-rolled wrap-around math.
+- **Status:** movement/tiling mechanics implemented and functional. Visual content (shapes, colors, nebula placeholder) explicitly first-pass/unverified — revisit once real art exists.
+
 ## Status
-Nothing here is locked. Revisit once Individual/Operational Scale design work actually begins for real.
+Nothing here is locked except the Ship-in-space scene construction above (real, maintained code). Everything else in this document is still parked. Revisit once Individual/Operational Scale design work actually begins for real.
