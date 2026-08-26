@@ -1,0 +1,32 @@
+name: "TODO to Issue"
+
+# Scans every push for // TODO comments in code and keeps a matching
+# GitHub Issue in sync automatically: creates one when a new TODO shows
+# up, updates it if the comment changes, and closes it when the TODO is
+# removed from code. Each generated issue includes a permalink straight
+# to the exact file/line, plus a code snippet for context.
+#
+# Comment format recognized: // TODO: <description>
+# Optional reference syntax (parsed by the action itself):
+#   TODO(@username)  -> assigns the issue
+#   TODO(!label)     -> adds a label
+#   TODO(#99)        -> links to an existing issue
+# Plain parenthetical notes that aren't @/!/# (e.g. a date) are left as
+# literal text in the issue body - harmless, just not parsed as metadata.
+
+on: ["push"]
+
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    permissions:
+      issues: write
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: "actions/checkout@v6"
+      - name: "TODO to Issue"
+        uses: "alstr/todo-to-issue-action@v5"
+        with:
+          CLOSE_ISSUES: "true"
+          INSERT_ISSUE_URLS: "true"
