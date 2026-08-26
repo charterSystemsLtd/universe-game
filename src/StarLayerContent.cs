@@ -47,7 +47,27 @@ public partial class StarLayerContent : Node2D
             DrawCircle(nebulaPos, 250f, new Color(0.6f, 0.35f, 0.85f, 0.08f));
         }
 
-        // Planets — larger, more saturated dots than plain stars.
+        // TODO(2026-08-25): PlanetCount is currently 0 on all three layers
+        // in Starfield.tscn, and should stay that way. Two separate reasons
+        // stack here, not just one:
+        //   1. Any major body the player can actually see should be a real,
+        //      visitable entity handled by the Planetary Generation System,
+        //      not a decorative parallax object with no substance behind it.
+        //   2. Even setting (1) aside, our own numbers (Planetary Generation
+        //      System doc: 500x500 sm coordinates, only 75% spawn chance,
+        //      region-scale distances in the thousands of sm) mean planets
+        //      should be RARE at any given moment, not ambient clutter.
+        //      Barely moving and seeing "hundreds of planets" directly
+        //      contradicts the vastness the design calls for.
+        // Do NOT just re-enable this loop with a small PlanetCount as a
+        // quick fix later — the real fix is wiring actual visitable planet
+        // positions from the generation system once it exists, spaced per
+        // our real sm-based numbers (this is exactly what development
+        // roadmap step 7, the sm-consistency audit, is for — deliberately
+        // not tackled here/now, before physics tuning against the
+        // reference Earth). Deep Space's nebula placeholder is NOT part of
+        // this — that one's fine as pure background dressing, nothing to
+        // visit there, and stays as-is.
         for (int i = 0; i < PlanetCount; i++)
         {
             Vector2 pos = RandomPointInTile(rng);
