@@ -37,6 +37,21 @@ public partial class Ship : Node2D
 		// Godot's `Input` is a static-like global service — similar to
 		// calling a static utility method in Java, no construction or
 		// dependency injection needed to read input state.
+		//
+		// TODO: this does not preserve angular momentum, unlike linear
+		// movement below. Rotation is set directly from current input
+		// every frame (rotationInput * RotationSpeed * dt) with no
+		// persisted angular-velocity state, so the ship stops rotating
+		// the instant A/D is released - inconsistent with the "pure
+		// inertia" space-flight model _velocity already gives us for
+		// translation (thrust adds to a persisted _velocity that only
+		// changes from active input, never on its own). Real fix: add a
+		// persisted _angularVelocity field, have rotation input add to it
+		// (torque) rather than directly setting Rotation, and apply it
+		// each frame the same way _velocity gets applied to Position -
+		// same pattern already used below, just for rotation instead of
+		// translation. Deliberately not fixed yet - flagging now so it
+		// isn't forgotten once real physics tuning starts (roadmap step 5).
 		float rotationInput = Input.GetAxis("ship_rotate_left", "ship_rotate_right");
 		Rotation += rotationInput * RotationSpeed * dt;
 
