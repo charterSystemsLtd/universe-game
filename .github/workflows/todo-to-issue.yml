@@ -1,18 +1,19 @@
-name: "TODO to Issue"
-
-# Scans every push for // TODO comments in code and keeps a matching
-# GitHub Issue in sync automatically: creates one when a new TODO shows
-# up, updates it if the comment changes, and closes it when the TODO is
-# removed from code. Each generated issue includes a permalink straight
-# to the exact file/line, plus a code snippet for context.
+# Task-comment-to-Issue automation.
 #
-# Comment format recognized: // TODO: <description>
-# Optional reference syntax (parsed by the action itself):
-#   TODO(@username)  -> assigns the issue
-#   TODO(!label)     -> adds a label
-#   TODO(#99)        -> links to an existing issue
-# Plain parenthetical notes that aren't @/!/# (e.g. a date) are left as
-# literal text in the issue body - harmless, just not parsed as metadata.
+# Scans every push for real code task comments and keeps a matching
+# GitHub Issue in sync automatically - created on a new one, updated if
+# it changes, closed when the comment is removed from code. Each
+# generated issue includes a permalink to the exact file/line plus a
+# code snippet for context.
+#
+# Deliberately not spelling out the trigger comment's exact format or the
+# action's optional reference syntax inline in this file - an earlier
+# version did, and the action scanned its own illustrative examples as
+# real trigger comments, creating five garbage issues. See the action's
+# own README (alstr/todo-to-issue-action on GitHub) for exact syntax
+# instead of duplicating it here where it can trigger itself.
+
+name: "TODO to Issue"
 
 on: ["push"]
 
