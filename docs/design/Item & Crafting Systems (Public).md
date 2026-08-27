@@ -72,7 +72,7 @@ Multiple liquid types get built on top of whatever base system results. **Explic
 - `IPlaceable` — can exist as a physical object in the world. Points to that object's placed-in-world representation. **This is the same data/rendering-half split established in Modular Scene Assembly** — an item's inventory data is its data half, its placed-in-world appearance is its rendering half. Not a coincidence; same underlying pattern.
 - `IHarvestSource` — for natural entities (a tree) that yield item(s) when harvested/destroyed. Deliberately separate from `IPlaceable` — see "Drops vs. placement" above. References what item(s), what quantity/probability.
 - `ICraftable` — has a recipe: required inputs, quantities, required crafting station type.
-- `IConnectable` — for walls/wiring/anything needing adjacency-aware sprites and behavior (see "Walls" above).
+- `IConnectable` — for walls/wiring/anything needing adjacency-aware sprites and behavior (see "Walls" above). **Real open extension, not yet built:** on a finite, wrapping planet, a connectable item physically near the edge needs to resolve its neighbors *through* the wrap (the "stitched" opposite side), not just by raw adjacent coordinates — see [Planetary Generation System (Public)](Planetary%20Generation%20System%20(Public).md) → "Finite-planet surface topology" for the full problem and the `Planet.WrapPosition`/`WrappedDistance` tools this will need to use.
 - `IElectricalComponent` — participates in an electrical network, per the programmatic-not-procedural design call above.
 - `IFuel` — burn value, for whatever the refinement/fuel system ends up needing.
 - `IEquippable` — weapons/armor: stats, equip slot.

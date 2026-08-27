@@ -26,6 +26,32 @@ namespace UniverseGame;
 // wrap at a hard edge the same way a small test planet does) - flagged
 // as a first-pass choice for this test planet specifically, not a
 // permanent design decision.
+// TODO(!architecture): current wrap-around is a hard "pop" (character and
+// camera teleport instantly at the boundary), not smooth/seamless wrapping.
+// Genuinely smooth wrap needs a real additional technique: duplicating a
+// thin border strip near each edge, purely visually - does not violate
+// "one instance per physical location" as long as it stays scoped to a
+// narrow seam. Not built. Full writeup: Planetary Generation System
+// (Public) doc, "Finite-planet surface topology" section.
+//
+// TODO(!architecture): item/machine functionality that physically
+// straddles the planet boundary (a connectable's input/output near or
+// over the edge) needs to route through the wrap to the "stitched"
+// opposite side, extending IConnectable (Item & Crafting Systems doc).
+// No concrete code location yet - logged here since Planet.WrapPosition/
+// WrappedDistance are the tools this will need. Full writeup: Planetary
+// Generation System (Public) doc, "Finite-planet surface topology".
+//
+// TODO(!architecture): planets smaller than the visible render area risk
+// showing the same physical location (or the character) more than once
+// simultaneously once the smooth-wrap border-duplication TODO above gets
+// built - a real physics-breaking duplicate, not just visual. Suggested
+// direction: cap the effective visible render area to the planet's real
+// size via the existing InGameResolution system, rather than a hard wall
+// or camera zoom. Not a risk yet (current hard-pop wrap can't show two
+// copies at once) - flagged for whenever the border-duplication work
+// happens. Full writeup: Planetary Generation System (Public) doc,
+// "Finite-planet surface topology".
 public partial class Planet : Node2D
 {
     [Export] public int SizeInTiles = 30;
@@ -40,6 +66,30 @@ public partial class Planet : Node2D
         int wrappedX = Wrap(pos.X, -BoundsPixels, BoundsPixels);
         int wrappedZ = Wrap(pos.Z, -BoundsPixels, BoundsPixels);
         return new PlanetPosition(wrappedX, wrappedZ, pos.Y);
+    }
+
+    // Real distance between two surface positions, correctly accounting
+    // for wrap-around - the "going around the seam" path counts if it's
+    // actually shorter than the direct path. Without this, any proximity
+    // check (event triggers, future item/machine boundary-routing, NPC
+    // awareness) would treat two points that are genuinely right next to
+    // each other across the seam as being almost the planet's full width
+    // apart, which is wrong. Not wired into anything yet - this is the
+    // foundational piece other systems will build on.
+    public float WrappedDistance(PlanetPosition a, PlanetPosition b)
+    {
+        float dx = WrappedAxisDistance(a.X, b.X);
+        float dz = WrappedAxisDistance(a.Z, b.Z);
+        return Mathf.Sqrt(dx * dx + dz * dz);
+    }
+
+    // Shorter of "direct distance" and "distance the other way around"
+    // for a single axis.
+    private float WrappedAxisDistance(int a, int b)
+    {
+        float range = BoundsPixels * 2f;
+        float direct = Mathf.Abs(a - b);
+        return Mathf.Min(direct, range - direct);
     }
 
     // Standard wrap-into-range math - the double-modulo handles negative

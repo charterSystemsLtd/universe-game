@@ -1,22 +1,21 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3 uid="uid://bfwyj7kblop3e"]
 
-[ext_resource type="PackedScene" path="res://scenes/Character.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://cgwh4uuts1afs" path="res://scenes/Character.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/Ground.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/DisplaySettingsUI.tscn" id="3"]
-[ext_resource type="Script" path="res://src/Planet.cs" id="4"]
+[ext_resource type="Script" uid="uid://qntl6glmsuow" path="res://src/Planet.cs" id="4"]
 
-[node name="IndividualScaleTest" type="Node2D"]
+[node name="IndividualScaleTest" type="Node2D" unique_id=1447794939]
 
-[node name="Planet" type="Node2D" parent="."]
+[node name="Planet" type="Node2D" parent="." unique_id=419806877]
 script = ExtResource("4")
-SizeInTiles = 30
-TileSizePixels = 16
 
-[node name="Ground" parent="." instance=ExtResource("2")]
+[node name="Ground" parent="." unique_id=1831237138 node_paths=PackedStringArray("SourcePlanet") instance=ExtResource("2")]
+SourcePlanet = NodePath("../Planet")
 
-[node name="Character" parent="." instance=ExtResource("1")]
+[node name="Character" parent="." unique_id=853264132 node_paths=PackedStringArray("CurrentPlanet") instance=ExtResource("1")]
+CurrentPlanet = NodePath("../Planet")
 
-[node name="Camera2D" type="Camera2D" parent="Character"]
-zoom = Vector2(1, 1)
+[node name="Camera2D" type="Camera2D" parent="Character" unique_id=4089422]
 
-[node name="DisplaySettingsUI" parent="." instance=ExtResource("3")]
+[node name="DisplaySettingsUI" parent="." unique_id=1585493297 instance=ExtResource("3")]
