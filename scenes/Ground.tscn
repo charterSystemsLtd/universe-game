@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/GroundTileContent.cs" id="1"]
+
+[node name="Ground" type="ParallaxBackground"]
+
+[node name="GroundLayer" type="ParallaxLayer" parent="."]
+motion_scale = Vector2(1, 1)
+motion_mirroring = Vector2(320, 320)
+
+[node name="Content" type="Node2D" parent="GroundLayer"]
+script = ExtResource("1")
+TileSize = Vector2(320, 320)
+GridStep = 16
+RandomSeed = 7

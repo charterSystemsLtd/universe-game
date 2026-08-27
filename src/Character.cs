@@ -15,6 +15,22 @@ public partial class Character : CharacterBody2D
 {
     [Export] public float MoveSpeed = 100f;
 
+    // Single source of truth for walk-animation playback speed (frames
+    // per second). Previously each of the 8 animations had its own
+    // "speed" value baked into the SpriteFrames resource in
+    // Character.tscn, and they'd drifted inconsistent (down was 8 fps,
+    // everything else was 5). Rather than hand-syncing 8 separate values
+    // in the editor, _Ready below force-overwrites all 8 to this one
+    // number every time the game starts - so the .tscn's baked values
+    // become irrelevant, even if they drift again later.
+    [Export] public float WalkFps = 8f;
+
+    // How much faster both movement and animation get while sprinting -
+    // one factor applied identically to both, so the animation always
+    // stays visually consistent with actual movement speed instead of
+    // the character appearing to slide/moonwalk.
+    [Export] public float SprintMultiplier = 1.8f;
+
     // Which of the 8 directions we're currently facing, so we know which
     // AnimatedSprite2D animation to play. Matches the animation names as
     // actually saved in Character.tscn's SpriteFrames (down, up, left,
@@ -32,6 +48,17 @@ public partial class Character : CharacterBody2D
     public override void _Ready()
     {
         _sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+
+        // Force every animation to the same baseline speed, overriding
+        // whatever's individually baked into the SpriteFrames resource -
+        // this is the actual fix for the inconsistent-FPS issue, not
+        // just a one-time cleanup. SpriteFrames (the resource, not the
+        // node) is what SetAnimationSpeed lives on.
+        SpriteFrames frames = _sprite.SpriteFrames;
+        foreach (StringName animName in frames.GetAnimationNames())
+        {
+            frames.SetAnimationSpeed(animName, WalkFps);
+        }
     }
 
     // _PhysicsProcess (as opposed to _Process, which Ship.cs uses) runs on
@@ -47,13 +74,23 @@ public partial class Character : CharacterBody2D
         // faster than a single direction alone.
         Vector2 inputDir = Input.GetVector("move_left", "move_right", "move_up", "move_down");
 
-        Velocity = inputDir * MoveSpeed;
+        // Sprint applies the SAME multiplier to movement speed and
+        // animation playback speed - that's the whole point of centralizing
+        // WalkFps above rather than leaving each animation's speed baked
+        // independently. Without this, sprinting would either look like
+        // the character is sliding (feet not keeping up with real speed)
+        // or moonwalking (feet outpacing it).
+        bool sprinting = Input.IsActionPressed("sprint");
+        float speedMultiplier = sprinting ? SprintMultiplier : 1f;
+
+        Velocity = inputDir * MoveSpeed * speedMultiplier;
         MoveAndSlide(); // Godot's built-in collide-and-slide movement resolution.
 
         if (inputDir != Vector2.Zero)
         {
             _facing = DirectionName(inputDir);
             _sprite.Play(_facing);
+            _sprite.SpeedScale = speedMultiplier;
         }
         else
         {

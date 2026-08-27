@@ -62,6 +62,19 @@ move_right={
 ]
 }
 
+[autoload]
+
+DisplaySettings="*res://src/DisplaySettings.cs"
+
 [rendering]
 
 environment/defaults/default_clear_color=Color(0, 0, 0, 1)
+
+; Nearest-neighbor filtering, not the default smoothed/linear filtering -
+; without this, scaling the low internal resolution up to fill the window
+; (see DisplaySettings.cs) would blur every sprite into a smeared mess
+; instead of crisp, blocky retro pixels. This is the other half of the
+; "8-bit calculable visuals" pipeline alongside the low render resolution
+; itself - one controls how MANY pixels get computed, this controls how
+; they look once stretched up to fill the actual window.
+textures/canvas_textures/default_texture_filter=0
