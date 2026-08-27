@@ -14,18 +14,21 @@ namespace UniverseGame;
 // directly, no logic of its own - relocating this into a real settings
 // menu later is just moving this scene's contents, the underlying
 // DisplaySettings system doesn't change at all.
+//
+// Fullscreen checkbox removed 2026-08-27 - wasn't actually doing anything
+// observable, root cause not diagnosed yet. DisplaySettings.ApplyFullscreen()
+// still exists and works as a method; just nothing in this UI calls it
+// right now. Real fix (a working toggle) deferred - see project reminders.
 public partial class DisplaySettingsUI : CanvasLayer
 {
     private DisplaySettings _settings;
     private OptionButton _resolutionOption;
-    private CheckBox _fullscreenCheck;
 
     public override void _Ready()
     {
         _settings = GetNode<DisplaySettings>("/root/DisplaySettings");
 
         _resolutionOption = GetNode<OptionButton>("Panel/VBoxContainer/ResolutionOption");
-        _fullscreenCheck = GetNode<CheckBox>("Panel/VBoxContainer/FullscreenCheck");
 
         _resolutionOption.Clear();
         int selectedIndex = 0;
@@ -40,20 +43,12 @@ public partial class DisplaySettingsUI : CanvasLayer
         }
         _resolutionOption.Selected = selectedIndex;
 
-        _fullscreenCheck.ButtonPressed = _settings.Fullscreen;
-
         _resolutionOption.ItemSelected += OnResolutionSelected;
-        _fullscreenCheck.Toggled += OnFullscreenToggled;
     }
 
     private void OnResolutionSelected(long index)
     {
         Vector2I preset = DisplaySettings.ResolutionPresets[(int)index];
         _settings.ApplyInGameResolution(preset);
-    }
-
-    private void OnFullscreenToggled(bool pressed)
-    {
-        _settings.ApplyFullscreen(pressed);
     }
 }
