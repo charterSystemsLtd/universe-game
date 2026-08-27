@@ -1,4 +1,5 @@
 using Godot;
+using System.Collections.Generic;
 
 namespace UniverseGame;
 
@@ -9,62 +10,70 @@ namespace UniverseGame;
 // a manual getInstance() pattern.
 //
 // This is the single source of truth for the "8-bit calculable visuals"
-// pipeline: how many actual pixels the game renders internally (the real
-// compute-saving part - fewer pixels means less GPU work regardless of
-// what size the window is), what window mode we're in, and how the low
-// internal resolution gets scaled up to fill the window. Building this as
-// its own Autoload rather than scattering these settings across scenes is
-// what makes it possible to later drop real UI (sliders, a settings menu)
-// on top without touching this logic at all - the UI just calls these
-// methods.
+// pipeline. Two genuinely separate things live here, on purpose:
+//   - InGameResolution: the real internal render resolution - this is
+//     the actual "how many pixels does the GPU compute" number, i.e. the
+//     one setting in this whole system with a real performance cost.
+//   - Fullscreen: whether the OS window is fullscreen or not.
+// Everything about how big the final window/screen looks is handled by
+// Godot's own stretch/upscale machinery, completely separate from - and
+// free relative to - the above. See DisplaySettingsUI for the actual
+// resolution-picker UI built on top of this.
 public partial class DisplaySettings : Node
 {
-    // The actual internal render resolution - this is the real "how many
-    // pixels does the GPU have to compute" number. Starts at a value in
-    // the same family as what was discussed early on (320x180-ish),
-    // adjustable at runtime via ApplyInternalResolution below.
-    [Export] public int InternalWidth = 320;
-    [Export] public int InternalHeight = 180;
+    // Curated preset list, not a continuous slider - deliberately not
+    // tied to the 16px tile size at all. Partial ("spliced") tiles at the
+    // screen edges are a real, intentional design choice here, not a
+    // rounding error to avoid: they hint that the world continues past
+    // the visible edge, same idea Terraria and plenty of other tile
+    // games use rather than hard-locking resolution to a whole-tile grid.
+    public static readonly List<Vector2I> ResolutionPresets = new()
+    {
+        new Vector2I(320, 180),
+        new Vector2I(480, 270),
+        new Vector2I(640, 360),
+        new Vector2I(960, 540),
+        new Vector2I(1280, 720),
+        new Vector2I(1920, 1080),
+    };
 
+    [Export] public Vector2I InGameResolution = new Vector2I(320, 180);
     [Export] public bool Fullscreen = false;
 
     public override void _Ready()
     {
-        // The window not being resizable was one of the real issues
-        // raised - Godot defaults new projects to a resizable window, but
-        // confirming it explicitly here rather than relying on whatever
-        // the project file happens to have.
+        // Windowed mode: dragging the window's edges resizes the actual
+        // window (the upscale target), NOT InGameResolution - that's the
+        // real compute-cost setting and only the preset list below
+        // changes it. Fullscreen mode has no window edges to drag, so
+        // the preset list becomes the only way to change how much is
+        // rendered. Both cases fall out naturally from ContentScaleMode
+        // = Viewport below; nothing extra needed to make window-dragging
+        // behave this way.
         GetWindow().Unresizable = false;
 
-        ApplyInternalResolution(InternalWidth, InternalHeight);
+        ApplyInGameResolution(InGameResolution);
         ApplyFullscreen(Fullscreen);
     }
 
-    // Sets the real internal render resolution and switches the window's
-    // stretch mode to actually use it. ContentScaleMode.Viewport means
-    // Godot renders the whole game at (width, height) internally, then
-    // scales that fixed-size result up to fill however large the actual
-    // window is - the scaling itself is just stretching a small finished
-    // image, not extra rendering work, which is where the real compute
-    // savings come from versus rendering at native window resolution.
+    // ContentScaleMode.Viewport: Godot renders the whole game at
+    // InGameResolution internally, then scales that fixed-size result up
+    // to fill however large the actual window is - that final scale is a
+    // single stretch operation on an already-finished image, not extra
+    // rendering, which is the real source of the compute savings.
     //
-    // ContentScaleAspect.Expand, not .Keep: Keep preserves the exact
-    // internal aspect ratio by letterboxing (black bars) whenever the
-    // window/screen doesn't match it exactly - real problem on a MacBook
-    // screen that isn't exactly 16:9. Expand instead reveals more (or
-    // less) of the game world at the edges to genuinely fill the window,
-    // with every tile still rendered at a consistent, undistorted pixel
-    // size - true screen-to-screen fill on native macOS fullscreen, no
-    // black bars, nothing stretched out of shape.
-    public void ApplyInternalResolution(int width, int height)
+    // ContentScaleAspect.Expand: reveals more (or less) of the game world
+    // at the edges to genuinely fill the window/screen, rather than
+    // letterboxing (Keep) or distorting (Ignore) when the window's
+    // aspect ratio doesn't exactly match InGameResolution's.
+    public void ApplyInGameResolution(Vector2I resolution)
     {
-        InternalWidth = width;
-        InternalHeight = height;
+        InGameResolution = resolution;
 
         Window window = GetWindow();
         window.ContentScaleMode = Window.ContentScaleModeEnum.Viewport;
         window.ContentScaleAspect = Window.ContentScaleAspectEnum.Expand;
-        window.ContentScaleSize = new Vector2I(width, height);
+        window.ContentScaleSize = resolution;
     }
 
     public void ApplyFullscreen(bool fullscreen)
