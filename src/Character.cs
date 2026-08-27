@@ -16,10 +16,10 @@ public partial class Character : CharacterBody2D
     [Export] public float MoveSpeed = 100f;
 
     // Which of the 8 directions we're currently facing, so we know which
-    // AnimatedSprite2D animation to play. Named to match the source sprite
-    // pack's own per-direction file names exactly (down, up, left, right,
-    // down left, down right, up left, up right) — see the character
-    // folder's `source/` directory.
+    // AnimatedSprite2D animation to play. Matches the animation names as
+    // actually saved in Character.tscn's SpriteFrames (down, up, left,
+    // right, down_left, down_right, up_left, up_right) - underscores, not
+    // spaces, since Godot's animation-name field doesn't accept spaces.
     private string _facing = "down";
 
     private AnimatedSprite2D _sprite;
@@ -71,13 +71,18 @@ public partial class Character : CharacterBody2D
         float degrees = Mathf.RadToDeg(dir.Angle());
         if (degrees < 0) degrees += 360f;
 
+        // Underscores, not spaces - Godot's animation-name field doesn't
+        // accept spaces, so that's what actually got saved in
+        // Character.tscn's SpriteFrames when the animations were created
+        // in the editor. Matching that here rather than the other way
+        // around, since it's a real engine constraint, not a preference.
         if (degrees >= 337.5f || degrees < 22.5f) return "right";
-        if (degrees < 67.5f) return "down right";
+        if (degrees < 67.5f) return "down_right";
         if (degrees < 112.5f) return "down";
-        if (degrees < 157.5f) return "down left";
+        if (degrees < 157.5f) return "down_left";
         if (degrees < 202.5f) return "left";
-        if (degrees < 247.5f) return "up left";
+        if (degrees < 247.5f) return "up_left";
         if (degrees < 292.5f) return "up";
-        return "up right";
+        return "up_right";
     }
 }
