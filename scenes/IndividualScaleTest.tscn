@@ -1,17 +1,12 @@
 [gd_scene format=3 uid="uid://bfwyj7kblop3e"]
 
 [ext_resource type="PackedScene" uid="uid://cgwh4uuts1afs" path="res://scenes/Character.tscn" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/Ground.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/DisplaySettingsUI.tscn" id="3"]
-[ext_resource type="Script" uid="uid://qntl6glmsuow" path="res://src/Planet.cs" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/Planet.tscn" id="4"]
 
 [node name="IndividualScaleTest" type="Node2D" unique_id=1447794939]
 
-[node name="Planet" type="Node2D" parent="." unique_id=419806877]
-script = ExtResource("4")
-
-[node name="Ground" parent="." unique_id=1831237138 node_paths=PackedStringArray("SourcePlanet") instance=ExtResource("2")]
-SourcePlanet = NodePath("../Planet")
+[node name="Planet" parent="." unique_id=419806877 instance=ExtResource("4")]
 
 [node name="Character" parent="." unique_id=853264132 node_paths=PackedStringArray("CurrentPlanet") instance=ExtResource("1")]
 CurrentPlanet = NodePath("../Planet")

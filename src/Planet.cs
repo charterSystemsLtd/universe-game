@@ -28,11 +28,17 @@ namespace UniverseGame;
 // permanent design decision.
 // TODO(!architecture): current wrap-around is a hard "pop" (character and
 // camera teleport instantly at the boundary), not smooth/seamless wrapping.
-// Genuinely smooth wrap needs a real additional technique: duplicating a
-// thin border strip near each edge, purely visually - does not violate
-// "one instance per physical location" as long as it stays scoped to a
-// narrow seam. Not built. Full writeup: Planetary Generation System
-// (Public) doc, "Finite-planet surface topology" section.
+// Real fix, extended 2026-08-27: don't render the whole planet at all -
+// render only what's actually visible on screen (character position +
+// InGameResolution), plus a matching-size region from the wrapped
+// opposite side when near an edge. Underlying item/creature logic still
+// runs planet-wide on the backend; only the visual draw gets scoped to
+// what's on screen - real compute savings once the planet has real
+// content to render, not just a visual trick. Wrap-safe exactly as long
+// as planet size >= visible render area; falls back to hard-wall
+// collision the instant the planet is smaller. Not built. Full writeup:
+// Planetary Generation System (Public) doc, "Finite-planet surface
+// topology" section.
 //
 // TODO(!architecture): item/machine functionality that physically
 // straddles the planet boundary (a connectable's input/output near or
@@ -52,6 +58,14 @@ namespace UniverseGame;
 // copies at once) - flagged for whenever the border-duplication work
 // happens. Full writeup: Planetary Generation System (Public) doc,
 // "Finite-planet surface topology".
+//
+// TODO(!architecture): Planet has no reference yet to the planet's actual
+// identity/position/icon within the Universal Scale (the Star Chart, per
+// the Master Design Document) - needed before real generation connects
+// Universal Scale to individual landable planets. May be able to live as
+// plain data on Planet itself rather than needing a separate system.
+// Full writeup: Planetary Generation System (Public) doc, "Finite-planet
+// surface topology" section.
 public partial class Planet : Node2D
 {
     [Export] public int SizeInTiles = 30;
