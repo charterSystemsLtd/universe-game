@@ -42,6 +42,48 @@ public partial class Character : CharacterBody2D
     // the character appearing to slide/moonwalk.
     [Export] public float SprintMultiplier = 1.8f;
 
+    // The planet this character is currently standing on - needed to know
+    // the real, finite bounds to wrap movement against. Assigned in the
+    // Godot editor (drag the Planet node onto this field in the
+    // Inspector), not looked up automatically, since which planet a
+    // character is on is exactly the kind of thing that changes when they
+    // actually travel between planets later.
+    [Export] public Planet CurrentPlanet;
+
+    // Real position on the planet's surface, in whole pixels from its
+    // center - see PlanetPosition.cs for why this is integer pixels, not
+    // float tiles. Derived from this node's actual Godot Position each
+    // physics frame, not maintained independently - Godot's Position is
+    // still the real source of truth for where the character visually is,
+    // this is a read-friendly, planet-relative view of the same fact.
+    //
+    // Axis mapping, worth being explicit about: Godot's 2D engine only has
+    // X and Y. Our own design docs define the ground plane as X/Z (with Y
+    // reserved for floor/altitude - see Scale Terminology). So Godot's Y
+    // (screen-down) maps to our game's Z here, and PlanetPosition.Y stays
+    // 0 until floors are actually implemented - this mapping needs to
+    // stay consistent everywhere position gets touched, not just here.
+    public PlanetPosition Position2D { get; private set; }
+
+    // TODO(!architecture): need real functions for entering/leaving a
+    // planet's surface, tied to the Containment Collapse Model's
+    // expand/collapse mechanism (Master Design Document). Two separate,
+    // currently-undefined operations:
+    //   1. Instantiating a character's PlanetPosition on landing/arrival -
+    //      given an incoming ship/context, where on the surface does the
+    //      character actually start? (a designated landing zone? the
+    //      ship's own touchdown position converted to surface
+    //      coordinates? something else?)
+    //   2. Ending/tearing down a character's PlanetPosition on departure -
+    //      does it get discarded entirely, or preserved so returning to
+    //      the same planet resumes near where they left? This directly
+    //      affects whether a planet needs to remember per-character state
+    //      at all once collapsed.
+    // Neither is implemented yet - both are real open design questions
+    // that matter once the Universal Scale <-> planet-landing connection
+    // gets built (development roadmap step 6+), not urgent for the
+    // current single-planet prototype.
+
     // Which of the 8 directions we're currently facing, so we know which
     // AnimatedSprite2D animation to play. Matches the animation names as
     // actually saved in Character.tscn's SpriteFrames (down, up, left,
@@ -96,6 +138,29 @@ public partial class Character : CharacterBody2D
 
         Velocity = inputDir * MoveSpeed * speedMultiplier;
         MoveAndSlide(); // Godot's built-in collide-and-slide movement resolution.
+
+        // Update the planet-relative position from wherever MoveAndSlide
+        // actually ended up, then check it against the planet's real
+        // bounds. If CurrentPlanet isn't assigned, skip entirely rather
+        // than crash - lets this scene keep working before a Planet node
+        // exists in it (e.g. mid-refactor), same defensive instinct as
+        // not assuming a resource is always wired up.
+        if (CurrentPlanet != null)
+        {
+            var rawPosition = new PlanetPosition((int)Position.X, (int)Position.Y);
+            var wrappedPosition = CurrentPlanet.WrapPosition(rawPosition);
+            Position2D = wrappedPosition;
+
+            // Only actually move the node if wrapping changed something -
+            // writing to Position every single frame regardless would be
+            // harmless but wasteful, and would fight MoveAndSlide's own
+            // collision resolution unnecessarily on the vast majority of
+            // frames where no wrap happened at all.
+            if (wrappedPosition.X != rawPosition.X || wrappedPosition.Z != rawPosition.Y)
+            {
+                Position = new Vector2(wrappedPosition.X, wrappedPosition.Z);
+            }
+        }
 
         if (inputDir != Vector2.Zero)
         {

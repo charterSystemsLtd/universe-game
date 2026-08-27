@@ -1,10 +1,16 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/Character.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/Ground.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/DisplaySettingsUI.tscn" id="3"]
+[ext_resource type="Script" path="res://src/Planet.cs" id="4"]
 
 [node name="IndividualScaleTest" type="Node2D"]
+
+[node name="Planet" type="Node2D" parent="."]
+script = ExtResource("4")
+SizeInTiles = 30
+TileSizePixels = 16
 
 [node name="Ground" parent="." instance=ExtResource("2")]
 
