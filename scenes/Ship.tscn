@@ -10,4 +10,4 @@ color = Color(0.8, 0.85, 0.95, 1)
 polygon = PackedVector2Array(0, -16, 10, 12, -10, 12)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=866894149]
-zoom = Vector2(2, 2)
+zoom = Vector2(1, 1)

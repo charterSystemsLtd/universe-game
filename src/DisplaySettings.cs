@@ -48,8 +48,14 @@ public partial class DisplaySettings : Node
     // image, not extra rendering work, which is where the real compute
     // savings come from versus rendering at native window resolution.
     //
-    // ContentScaleAspect.Keep preserves aspect ratio (letterboxing rather
-    // than stretching/distorting if the window's proportions don't match).
+    // ContentScaleAspect.Expand, not .Keep: Keep preserves the exact
+    // internal aspect ratio by letterboxing (black bars) whenever the
+    // window/screen doesn't match it exactly - real problem on a MacBook
+    // screen that isn't exactly 16:9. Expand instead reveals more (or
+    // less) of the game world at the edges to genuinely fill the window,
+    // with every tile still rendered at a consistent, undistorted pixel
+    // size - true screen-to-screen fill on native macOS fullscreen, no
+    // black bars, nothing stretched out of shape.
     public void ApplyInternalResolution(int width, int height)
     {
         InternalWidth = width;
@@ -57,7 +63,7 @@ public partial class DisplaySettings : Node
 
         Window window = GetWindow();
         window.ContentScaleMode = Window.ContentScaleModeEnum.Viewport;
-        window.ContentScaleAspect = Window.ContentScaleAspectEnum.Keep;
+        window.ContentScaleAspect = Window.ContentScaleAspectEnum.Expand;
         window.ContentScaleSize = new Vector2I(width, height);
     }
 

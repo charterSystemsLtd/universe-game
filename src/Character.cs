@@ -11,6 +11,17 @@ namespace UniverseGame;
 // collision/movement physics for free — relevant now that walls and trees
 // are coming next, which the ship never needed since open space has
 // nothing to collide with.
+//
+// TODO(!polish): character sprite's feet are cut off / read as missing.
+// Confirmed via raw pixel inspection (2026-08-26): the current 16x16 CC0
+// template art is drawn edge-to-edge with zero bottom margin - the
+// character's feet are fully opaque all the way to the literal last pixel
+// row of the canvas (row 15), so there's no room for the feet to read as
+// grounded, and taller walking poses can clip outright. This is a real
+// source-art constraint, not a rendering bug - not fixable by adjusting
+// code/camera/collision. Real fix is the already-planned 16x24 sprite
+// comparison (roadmap step 2), which gives the art actual headroom.
+// Parked for a real art/polish pass, not blocking further prototype work.
 public partial class Character : CharacterBody2D
 {
     [Export] public float MoveSpeed = 100f;
