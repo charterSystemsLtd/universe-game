@@ -147,7 +147,14 @@ public partial class Character : CharacterBody2D
         // not assuming a resource is always wired up.
         if (CurrentPlanet != null)
         {
-            var rawPosition = new PlanetPosition((int)Position.X, (int)Position.Y);
+            // RoundToInt, not a raw (int) cast - C#'s (int) cast truncates
+            // toward zero, which is asymmetric around zero (-3.9 becomes
+            // -3, not -4). Near the planet's center that would make
+            // movement in one direction report differently than the same
+            // distance in the opposite direction. Rounding is symmetric.
+            var rawPosition = new PlanetPosition(
+                Mathf.RoundToInt(Position.X),
+                Mathf.RoundToInt(Position.Y));
             var wrappedPosition = CurrentPlanet.WrapPosition(rawPosition);
             Position2D = wrappedPosition;
 

@@ -30,9 +30,21 @@ namespace UniverseGame;
 // "chunkiness" alongside the character.
 public partial class GroundTileContent : Node2D
 {
+    // Manual fallback size, only used if SourcePlanet isn't assigned.
     [Export] public Vector2 TileSize = new Vector2(480, 480);
     [Export] public int GridStep = 16;
     [Export] public int RandomSeed = 7;
+
+    // If assigned, the ground's real size is DERIVED from the planet
+    // rather than duplicated as an independent constant - this closes a
+    // real gap the earlier version had: TileSize here and Planet's own
+    // SizeInTiles/TileSizePixels were two separate values that happened
+    // to agree, with nothing keeping them in sync. Change Planet's size
+    // later without this link and Ground would silently stop matching
+    // the actual walkable/wrap boundary - the character could walk onto
+    // unrendered space, or the visible ground could extend past where
+    // wrapping actually happens.
+    [Export] public Planet SourcePlanet;
 
     // Two shades of green, matching the flat-color-block placeholder style
     // already used for the starfield's planets/stars.
@@ -41,18 +53,21 @@ public partial class GroundTileContent : Node2D
 
     public override void _Draw()
     {
+        Vector2 tileSize = SourcePlanet != null
+            ? new Vector2(SourcePlanet.BoundsPixels * 2, SourcePlanet.BoundsPixels * 2)
+            : TileSize;
         var rng = new RandomNumberGenerator();
         rng.Seed = (ulong)RandomSeed;
 
-        int cols = (int)(TileSize.X / GridStep);
-        int rows = (int)(TileSize.Y / GridStep);
+        int cols = (int)(tileSize.X / GridStep);
+        int rows = (int)(tileSize.Y / GridStep);
 
         for (int col = 0; col < cols; col++)
         {
             for (int row = 0; row < rows; row++)
             {
-                float x = -TileSize.X / 2f + col * GridStep;
-                float y = -TileSize.Y / 2f + row * GridStep;
+                float x = -tileSize.X / 2f + col * GridStep;
+                float y = -tileSize.Y / 2f + row * GridStep;
 
                 // Random per-cell variant gives the ground visible texture
                 // (a grid of subtly different green blocks) rather than a
