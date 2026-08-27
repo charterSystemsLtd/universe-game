@@ -27,17 +27,29 @@ public partial class DisplaySettings : Node
     // rounding error to avoid: they hint that the world continues past
     // the visible edge, same idea Terraria and plenty of other tile
     // games use rather than hard-locking resolution to a whole-tile grid.
+    // 480x270 listed first - it's the confirmed standard now, not just one
+    // option among equals (see StellarMeasure.cs / the Planetary
+    // Generation System doc for the sm derivation this decision completed).
     public static readonly List<Vector2I> ResolutionPresets = new()
     {
-        new Vector2I(320, 180),
         new Vector2I(480, 270),
+        new Vector2I(320, 180),
         new Vector2I(640, 360),
         new Vector2I(960, 540),
         new Vector2I(1280, 720),
         new Vector2I(1920, 1080),
     };
 
-    [Export] public Vector2I InGameResolution = new Vector2I(320, 180);
+    // 480x270 confirmed 2026-08-27 as the real standard resolution, not
+    // just a preset among equals - chosen by testing character-scale feel
+    // fullscreen on real hardware (character centered, ~15-16 tiles of
+    // context on each side). This is the actual completion of the sm
+    // unit's originally-planned derivation order (Planetary Generation
+    // System doc): character-scale feel decides the resolution, the
+    // resolution decides the sm - not the other way around. See
+    // PlanetPosition.cs / the design doc for the resulting sm-in-tiles
+    // value.
+    [Export] public Vector2I InGameResolution = new Vector2I(480, 270);
     [Export] public bool Fullscreen = false;
 
     public override void _Ready()
