@@ -14,16 +14,16 @@ config/name="Universe Game"
 run/main_scene="res://scenes/IndividualScaleTest.tscn"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 
+[autoload]
+
+DisplaySettings="*res://src/DisplaySettings.cs"
+
 [display]
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
-
-[autoload]
-
-DisplaySettings="*res://src/DisplaySettings.cs"
 
 [dotnet]
 

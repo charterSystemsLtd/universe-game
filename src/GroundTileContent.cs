@@ -2,13 +2,14 @@ using Godot;
 
 namespace UniverseGame;
 
-// Procedural ground texture for the Individual Scale test scene - gives a
-// real visual reference for how fast the character is actually moving,
-// replacing the earlier flat solid-color ground.
+// Ground texture for the Individual Scale test scene - gives a real
+// visual reference for how fast the character is actually moving.
 //
-// FIRST PASS, same framing as StarLayerContent: the drawing mechanics
-// here are real and durable, the actual grass visuals (flat color blocks
-// standing in for real grass texture) are an unverified placeholder.
+// REBUILT 2026-08-28: now draws the real grass tile Xander made in
+// Aseprite ("Grass Basic.aseprite", dropped in 07 Inbox), replacing the
+// earlier flat-color-block placeholder. Exported via the same Aseprite
+// CLI pipeline used for the character sprites (scripts/aseprite/) - see
+// assets/sprites/ground/source/Grass Basic.aseprite for the original.
 //
 // REBUILT 2026-08-27: this used to be an infinitely-tiling illusion via
 // ParallaxLayer mirroring - a small pattern repeated to look endless.
@@ -21,13 +22,14 @@ namespace UniverseGame;
 // ONCE, at its true full size, matching the Planet's real dimensions -
 // no repeating, no mirroring, no scaling-with-resolution cost at all.
 // _Draw() only runs once per node lifetime unless queue_redraw() is
-// explicitly called (never is, here), so even a few hundred rects drawn
-// once is genuinely trivial - the earlier cost was entirely from
-// Parallax's repeat/mirror mechanism, not from this drawing logic itself.
+// explicitly called (never is, here), so even a few hundred textured
+// rects drawn once is genuinely trivial - the earlier cost was entirely
+// from Parallax's repeat/mirror mechanism, not from this drawing logic.
 //
 // Drawn on a 16px grid to match the character's own tile size and the
 // Planet's own TileSizePixels, so ground detail reads at a consistent
-// "chunkiness" alongside the character.
+// "chunkiness" alongside the character. The grass tile itself is 16x16,
+// matching GridStep exactly - no scaling needed.
 public partial class GroundTileContent : Node2D
 {
     // Manual fallback size, only used if SourcePlanet isn't assigned.
@@ -46,13 +48,30 @@ public partial class GroundTileContent : Node2D
     // wrapping actually happens.
     [Export] public Planet SourcePlanet;
 
-    // Two shades of green, matching the flat-color-block placeholder style
-    // already used for the starfield's planets/stars.
-    private static readonly Color BaseGreen = new Color(0.29f, 0.55f, 0.24f);
-    private static readonly Color VariantGreen = new Color(0.25f, 0.48f, 0.21f);
+    [Export] public string GrassTexturePath = "res://assets/sprites/ground/grass_basic.png";
+    private Texture2D _grassTexture;
+
+    // Applied as a per-tile modulate on top of the texture's own internal
+    // dithering (not a separate draw color, now that there's a real
+    // texture) - the fine per-pixel noise in the sprite alone isn't
+    // coarse enough to read at a glance while moving; this coarser,
+    // per-tile light/dark variation is what actually makes camera
+    // movement readable, same reasoning the original flat-color
+    // placeholder was built around.
+    private static readonly Color VariantModulate = new Color(0.85f, 0.92f, 0.85f);
+
+    public override void _Ready()
+    {
+        _grassTexture = GD.Load<Texture2D>(GrassTexturePath);
+    }
 
     public override void _Draw()
     {
+        if (_grassTexture == null)
+        {
+            _grassTexture = GD.Load<Texture2D>(GrassTexturePath);
+        }
+
         Vector2 tileSize = SourcePlanet != null
             ? new Vector2(SourcePlanet.BoundsPixels * 2, SourcePlanet.BoundsPixels * 2)
             : TileSize;
@@ -69,12 +88,8 @@ public partial class GroundTileContent : Node2D
                 float x = -tileSize.X / 2f + col * GridStep;
                 float y = -tileSize.Y / 2f + row * GridStep;
 
-                // Random per-cell variant gives the ground visible texture
-                // (a grid of subtly different green blocks) rather than a
-                // perfectly uniform fill - this is what actually makes
-                // camera movement readable, not just the color itself.
-                Color color = rng.Randf() < 0.15f ? VariantGreen : BaseGreen;
-                DrawRect(new Rect2(x, y, GridStep, GridStep), color);
+                Color modulate = rng.Randf() < 0.15f ? VariantModulate : Colors.White;
+                DrawTextureRect(_grassTexture, new Rect2(x, y, GridStep, GridStep), false, modulate);
             }
         }
     }
