@@ -16,13 +16,28 @@ public partial class Ship : Node2D
 	// comparison: imagine a public field that automatically gets a
 	// generated property-editor UI, no getter/setter boilerplate needed.
 	[Export] public float ThrustPower = 400f;
-	[Export] public float RotationSpeed = 3f;
+	// Angular acceleration (torque), not a direct rotation speed — see
+	// _angularVelocity below. Renamed in spirit from the old
+	// "RotationSpeed" now that rotation preserves momentum the same way
+	// translation always has; no .tscn override existed for the old name,
+	// so nothing else needed to change to make this rename safe.
+	[Export] public float RotationAcceleration = 3f;
 	[Export] public float DecelerationPower = 300f;
 
 	// Current velocity, persists frame to frame. This is what gives us
 	// "zero friction, pure inertia" — nothing here ever subtracts from
 	// _velocity except the player actively thrusting in a new direction.
 	private Vector2 _velocity = Vector2.Zero;
+
+	// Angular counterpart to _velocity, added 2026-08-29 (closes GitHub
+	// Issue #7). Same "pure inertia" model as translation: rotation input
+	// adds to this persisted value (torque) rather than setting Rotation
+	// directly, so the ship keeps spinning after A/D is released, exactly
+	// like it keeps drifting after W is released. Nothing here decays it
+	// on its own — only active opposite-direction input (or eventually a
+	// dedicated rotational brake) changes it, consistent with there being
+	// no linear friction/drag either.
+	private float _angularVelocity = 0f;
 
 	// _Process runs once per rendered frame. In general OOP terms, this
 	// is Godot calling back into an overridden method every frame — same
@@ -38,22 +53,14 @@ public partial class Ship : Node2D
 		// calling a static utility method in Java, no construction or
 		// dependency injection needed to read input state.
 		//
-		// TODO: this does not preserve angular momentum, unlike linear
-		// movement below. Rotation is set directly from current input
-		// every frame (rotationInput * RotationSpeed * dt) with no
-		// persisted angular-velocity state, so the ship stops rotating
-		// the instant A/D is released - inconsistent with the "pure
-		// inertia" space-flight model _velocity already gives us for
-		// translation (thrust adds to a persisted _velocity that only
-		// changes from active input, never on its own). Real fix: add a
-		// persisted _angularVelocity field, have rotation input add to it
-		// (torque) rather than directly setting Rotation, and apply it
-		// each frame the same way _velocity gets applied to Position -
-		// same pattern already used below, just for rotation instead of
-		// translation. Deliberately not fixed yet - flagging now so it
-		// isn't forgotten once real physics tuning starts (roadmap step 5).
+		// Fixed 2026-08-29 (Issue #7): rotation now preserves momentum the
+		// same way translation does. Input adds torque to a persisted
+		// _angularVelocity rather than setting Rotation directly, so the
+		// ship keeps spinning after A/D is released — matching the "pure
+		// inertia" model _velocity already gives translation below.
 		float rotationInput = Input.GetAxis("ship_rotate_left", "ship_rotate_right");
-		Rotation += rotationInput * RotationSpeed * dt;
+		_angularVelocity += rotationInput * RotationAcceleration * dt;
+		Rotation += _angularVelocity * dt;
 
 		// Thrust: W or Up arrow adds velocity in the direction the ship
 		// is currently facing. Rotation is in radians; rotating the
