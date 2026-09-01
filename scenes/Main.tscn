@@ -1,10 +1,10 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://bljx5aeor7efh"]
 
 [ext_resource type="PackedScene" path="res://scenes/Starfield.tscn" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/Ship.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://daq1mtwp8ihmn" path="res://scenes/Ship.tscn" id="2"]
 
-[node name="Main" type="Node2D"]
+[node name="Main" type="Node2D" unique_id=2032349404]
 
-[node name="Starfield" parent="." instance=ExtResource("1")]
+[node name="Starfield" parent="." unique_id=1745093238 instance=ExtResource("1")]
 
-[node name="Ship" parent="." instance=ExtResource("2")]
+[node name="Ship" parent="." unique_id=943655315 instance=ExtResource("2")]

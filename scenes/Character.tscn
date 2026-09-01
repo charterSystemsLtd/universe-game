@@ -177,3 +177,5 @@ animation = &"down"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=273332517]
 shape = SubResource("RectangleShape2D_1")
+
+[node name="Camera2D" type="Camera2D" parent="."]

@@ -11,12 +11,13 @@ config_version=5
 [application]
 
 config/name="Universe Game"
-run/main_scene="res://scenes/IndividualScaleTest.tscn"
+run/main_scene="res://scenes/EnvironmentTest.tscn"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 
 [autoload]
 
 DisplaySettings="*res://src/DisplaySettings.cs"
+EnvironmentManager="*res://src/EnvironmentManager.cs"
 
 [display]
 

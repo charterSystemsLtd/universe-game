@@ -10,3 +10,13 @@ TileSizePixels = 16
 
 [node name="Ground" parent="." node_paths=PackedStringArray("SourcePlanet") instance=ExtResource("2")]
 SourcePlanet = NodePath("..")
+
+[node name="EntryPoint" type="Marker2D" parent="."]
+position = Vector2(0, 0)
+
+[node name="ExitTile" type="Node2D" parent="."]
+position = Vector2(32, 0)
+
+[node name="Visual" type="Polygon2D" parent="ExitTile"]
+color = Color(0.6, 0.2, 0.8, 1)
+polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
