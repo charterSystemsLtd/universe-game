@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://cr45ypysd5dms"]
+
+[ext_resource type="Texture2D" uid="uid://dp7irckq6llx5" path="res://assets/sprites/NavConsole.png" id="1_5j5wu"]
+
+[node name="Node2D" type="Node2D" unique_id=1821908293]
+
+[node name="NavConsole" type="Sprite2D" parent="." unique_id=968379177]
+texture = ExtResource("1_5j5wu")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=324743532]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D" unique_id=215112064]
+polygon = PackedVector2Array(16, -8, 16, 8, 4, 8, 4, 4, -4, 4, -4, 8, -16, 8, -16, -8)

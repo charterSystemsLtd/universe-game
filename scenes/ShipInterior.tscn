@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://dh6cmaacja8vg"]
+
+[ext_resource type="PackedScene" path="res://scenes/Starfield.tscn" id="1_pqyht"]
+[ext_resource type="Texture2D" uid="uid://ckd4i3wrbs68n" path="res://assets/sprites/ship/ship2.png" id="2_ship2"]
+[ext_resource type="PackedScene" uid="uid://cr45ypysd5dms" path="res://scenes/NavConsole.tscn" id="3_si8kn"]
+[ext_resource type="Script" uid="uid://bcin8e3146ac6" path="res://src/ShipInteriorStarfieldDrift.cs" id="4_drift"]
+
+[node name="ShipInterior" type="Node2D" unique_id=129390095]
+
+[node name="Starfield" parent="." unique_id=1303364897 instance=ExtResource("1_pqyht")]
+script = ExtResource("4_drift")
+
+[node name="Hull" type="Sprite2D" parent="." unique_id=717909690]
+texture = ExtResource("2_ship2")
+centered = false
+
+[node name="NavConsole" parent="." unique_id=1821908293 instance=ExtResource("3_si8kn")]
+position = Vector2(36, 44)
+
+[node name="Walls" type="StaticBody2D" parent="." unique_id=1178486564]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Walls" unique_id=1225858514]
+build_mode = 1
+polygon = PackedVector2Array(35, 5, 37, 5, 68, 52, 68, 180, 4, 180, 4, 52)
+
+[node name="EntryPoint" type="Marker2D" parent="." unique_id=1106829977]
+position = Vector2(36, 107)

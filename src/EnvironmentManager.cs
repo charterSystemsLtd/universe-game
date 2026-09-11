@@ -55,6 +55,19 @@ public partial class EnvironmentManager : Node
     public Node2D CurrentAvatar => _stack.Count > 0 ? _stack.Peek().Avatar : null;
     public Node2D CurrentInstance => _stack.Count > 0 ? _stack.Peek().Instance : null;
 
+    // Roadmap-v2 step 3 (character inventory): "when the player is
+    // inside an owned vehicle or environment, that vehicle or
+    // environment's inventory should also be accessible" (Xander's own
+    // spec). The current top-of-stack environment IS, by definition,
+    // whatever the player is currently inside - so "does the current
+    // environment have an inventory" is just "does its instance have a
+    // child node named Inventory." Returns null if the current
+    // environment doesn't have one (most don't, and don't need to -
+    // Space/Ground have no inventory of their own, only specific
+    // vehicles/sites like a ship's cargo hold would).
+    public Inventory CurrentEnvironmentInventory =>
+        _stack.Count > 0 ? _stack.Peek().Instance.GetNodeOrNull<Inventory>("Inventory") : null;
+
     // Signals — Godot's built-in pub/sub mechanism. Closest Java
     // comparison: declaring an event/listener interface and firing it,
     // except Godot wires "who's listening" up either in the editor
@@ -206,6 +219,51 @@ public partial class EnvironmentManager : Node
     {
         layer.Instance.Visible = active;
         layer.Instance.ProcessMode = active ? ProcessModeEnum.Inherit : ProcessModeEnum.Disabled;
+
+        // Real bug found 2026-09-10 from Xander's own playtest report +
+        // his own correct hunch ("maybe we have an instance of the stars
+        // that is not hidden... wasn't wired to come in properly"):
+        // CanvasLayer is NOT a CanvasItem - it's a plain Node, deliberately
+        // designed to render independent of its parent's transform. That
+        // independence also means it does NOT inherit its parent's
+        // Visible=false the way an ordinary CanvasItem child would - only
+        // ProcessMode actually propagates uniformly to every descendant
+        // Node regardless of type. So `layer.Instance.Visible = false`
+        // above correctly stops the layer's Node2D content from
+        // rendering, but any CanvasLayer underneath it (Space.tscn's own
+        // Starfield, ShipInterior.tscn's own Starfield/ShipInteriorStarfieldDrift
+        // - both direct children of the environment root) stays fully
+        // visible on screen the whole time, frozen at whatever state it
+        // was in the instant ProcessMode.Disabled stopped it from
+        // updating further. Boarding the ship left Space's own starfield
+        // as a permanent, frozen ghost rendered behind ShipInterior's own
+        // live one - explaining both "some stars track the character,
+        // others sit stagnant" (two overlapping instances, one frozen one
+        // live) and "multiple overlapping transparent planets" (each
+        // instance's own DeepSpace nebula circle, frozen in a different
+        // place). Fix: explicitly reach past the CanvasItem visibility
+        // system and toggle every descendant CanvasLayer's own Visible
+        // property directly - it doesn't inherit anything, so it has to
+        // be set directly.
+        foreach (Node descendant in FindAllDescendants(layer.Instance))
+        {
+            if (descendant is CanvasLayer canvasLayer)
+            {
+                canvasLayer.Visible = active;
+            }
+        }
+    }
+
+    private static IEnumerable<Node> FindAllDescendants(Node root)
+    {
+        foreach (Node child in root.GetChildren())
+        {
+            yield return child;
+            foreach (Node grandchild in FindAllDescendants(child))
+            {
+                yield return grandchild;
+            }
+        }
     }
 
     // Sustained Expand — for a layer the player is actually Loaded

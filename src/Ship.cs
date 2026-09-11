@@ -29,6 +29,23 @@ public partial class Ship : Node2D
 	// _velocity except the player actively thrusting in a new direction.
 	private Vector2 _velocity = Vector2.Zero;
 
+	// Public read-only view of _velocity — added 2026-09-10 so the ship
+	// interior's parallax starfield can be seeded with "how fast were we
+	// actually moving" the instant the player boards (EnvironmentManager
+	// hides this whole layer rather than destroying it while the player
+	// is inside, so _velocity itself is frozen/preserved automatically
+	// for free the moment they leave the console again — this getter is
+	// only needed for the one-time snapshot going IN, not for restoring
+	// state on the way back out).
+	public Vector2 Velocity => _velocity;
+
+	// Same reasoning as Velocity above, added alongside it 2026-09-10 -
+	// the ship interior's parallax needs to know not just "were we
+	// drifting" but "were we spinning" at the moment of boarding, so it
+	// can keep rotating the view-out-the-window to match, on top of
+	// scrolling it.
+	public float AngularVelocity => _angularVelocity;
+
 	// Angular counterpart to _velocity, added 2026-08-29 (closes GitHub
 	// Issue #7). Same "pure inertia" model as translation: rotation input
 	// adds to this persisted value (torque) rather than setting Rotation
