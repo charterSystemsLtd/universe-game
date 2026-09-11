@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/DisplaySettingsUI.tscn" id="5"]
 [ext_resource type="PackedScene" uid="uid://daq1mtwp8ihmn" path="res://scenes/Ship.tscn" id="6"]
 [ext_resource type="PackedScene" uid="uid://dh6cmaacja8vg" path="res://scenes/ShipInterior.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/InventoryUI.tscn" id="8"]
 
 [node name="EnvironmentTest" type="Node2D" unique_id=620828524]
 script = ExtResource("1")
@@ -17,3 +18,5 @@ SpaceScene = ExtResource("4")
 ShipInteriorScene = ExtResource("7")
 
 [node name="DisplaySettingsUI" parent="." unique_id=2070227703 instance=ExtResource("5")]
+
+[node name="InventoryUI" parent="." instance=ExtResource("8")]

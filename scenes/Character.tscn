@@ -1,6 +1,9 @@
 [gd_scene format=3 uid="uid://cgwh4uuts1afs"]
 
 [ext_resource type="Script" uid="uid://d00p5l6v7ipai" path="res://src/Character.cs" id="1"]
+[ext_resource type="Script" path="res://src/Inventory.cs" id="26_inventory"]
+[ext_resource type="Resource" path="res://resources/items/MiningTool.tres" id="27_mining"]
+[ext_resource type="Resource" path="res://resources/items/CraftingTool.tres" id="28_crafting"]
 [ext_resource type="Texture2D" uid="uid://djau1n7n0po8r" path="res://assets/sprites/character/down1.png" id="2_mcg62"]
 [ext_resource type="Texture2D" uid="uid://d1mdv382j86tu" path="res://assets/sprites/character/down2.png" id="3_pf8tf"]
 [ext_resource type="Texture2D" uid="uid://bn2pjjcsi5oie" path="res://assets/sprites/character/down3.png" id="4_tbgiv"]
@@ -170,6 +173,7 @@ size = Vector2(12, 12)
 
 [node name="Character" type="CharacterBody2D" unique_id=434179023]
 script = ExtResource("1")
+StartingItems = Array[Resource]([ExtResource("27_mining"), ExtResource("28_crafting")])
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1864019916]
 sprite_frames = SubResource("SpriteFrames_eaeix")
@@ -179,3 +183,8 @@ animation = &"down"
 shape = SubResource("RectangleShape2D_1")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Inventory" type="Node" parent="."]
+script = ExtResource("26_inventory")
+Rows = 3
+Columns = 10

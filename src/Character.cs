@@ -1,4 +1,5 @@
 using Godot;
+using System.Collections.Generic;
 
 namespace UniverseGame;
 
@@ -93,6 +94,46 @@ public partial class Character : CharacterBody2D
 
     private AnimatedSprite2D _sprite;
 
+    // Roadmap-v2 step 3: the player "always has access to" their own
+    // inventory (Xander's own spec) - so it lives directly on Character,
+    // a permanent child node (see Character.tscn), not something
+    // instantiated/attached conditionally. Cached in _Ready the same way
+    // _sprite is, rather than re-fetched via GetNode every access.
+    private Inventory _inventory;
+    public Inventory Inventory => _inventory;
+
+    // Starting items - a handful of basic placeholder items the character
+    // can actually carry, proving the Item/Inventory wiring end to end
+    // (roadmap-v2 step 3's own framing: "a handful of basic items the
+    // character can actually use (mining tool, crafting tool)"). Assign
+    // the two .tres resources under res://resources/items/ in the
+    // Inspector - left as an array rather than two hardcoded fields so
+    // adding a third starting item later doesn't need a new field.
+    [Export] public Item[] StartingItems = System.Array.Empty<Item>();
+
+    // Everything the player can currently reach: their own inventory,
+    // always, plus whatever the current environment's own inventory is
+    // (a ship's cargo hold, a site's storage) if one exists - "when the
+    // player is inside an owned vehicle or environment, that vehicle or
+    // environment's inventory should also be accessible" (Xander's own
+    // spec). Looked up live via EnvironmentManager rather than cached,
+    // since which environment the player is inside changes at runtime
+    // (board/undock, land/leave) and this needs to reflect that
+    // immediately, not a stale snapshot from whenever Character spawned.
+    public List<Inventory> GetAccessibleInventories()
+    {
+        var result = new List<Inventory> { _inventory };
+
+        var environmentManager = GetNodeOrNull<EnvironmentManager>("/root/EnvironmentManager");
+        Inventory environmentInventory = environmentManager?.CurrentEnvironmentInventory;
+        if (environmentInventory != null && environmentInventory != _inventory)
+        {
+            result.Add(environmentInventory);
+        }
+
+        return result;
+    }
+
     // _Ready runs once, after this node and its children have entered the
     // scene tree. Closest Java comparison: not quite a constructor —
     // child-node references (like grabbing AnimatedSprite2D below) have
@@ -111,6 +152,12 @@ public partial class Character : CharacterBody2D
         foreach (StringName animName in frames.GetAnimationNames())
         {
             frames.SetAnimationSpeed(animName, WalkFps);
+        }
+
+        _inventory = GetNode<Inventory>("Inventory");
+        foreach (Item item in StartingItems)
+        {
+            _inventory.TryAddItem(item, 1);
         }
     }
 
